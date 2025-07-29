@@ -23,19 +23,13 @@ mongoose
 
 // ✅ CORS Setup - allow frontend origins
 const allowedOrigins = [
-  "https://trishik-travels.web.app", // Firebase Hosting
-  "https://travels-frontend-e1epx7zzo-manoj-gowdas-projects-5dd01787.vercel.app", // Vercel
+  "https://trishik-travels.web.app",
+  "https://travels-frontend-e1epx7zzo-manoj-gowdas-projects-5dd01787.vercel.app",
 ];
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true, // allow cookies / auth headers
+  origin: allowedOrigins,
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
