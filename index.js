@@ -34,6 +34,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.use((req, res, next) => {
+  console.log("Incoming request origin:", req.headers.origin);
+  next();
+});
+
 // ✅ Middleware
 app.use(express.json());
 app.use(cookieParser());
