@@ -10,55 +10,59 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
-// Load environment variables
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3050;
 
-// ✅ Connect to MongoDB
+// ✅ Fix: Read the MongoDB connection string
+const mongoURL = process.env.MONGO_URL;
+
 mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+  .connect(mongoURL)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// ✅ CORS Setup - allow frontend origins
+// Middleware for CORS and JSON parsing
 const allowedOrigins = [
-  "https://trishik-travels.web.app",
-  "https://travels-frontend-e1epx7zzo-manoj-gowdas-projects-5dd01787.vercel.app",
+  "https://trips-travel.vercel.app",
+  "http://localhost:5173",
 ];
-
-const corsOptions = {
-  origin: allowedOrigins,
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-
-app.use((req, res, next) => {
-  console.log("Incoming request origin:", req.headers.origin);
-  next();
-});
-
-// ✅ Middleware
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// ✅ Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/tour", tourRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/booking", bookingRoutes);
-// Optional: remove if duplicate
+
 app.use("/api/reviews", reviewRoutes);
 
-// ✅ Root route
+app.listen(5000, () => {
+  console.log(
+    "mongodb+srv://ManojLakshmi:8904016770mk@cluster0.5xh3ozw.mongodb.net/trishik_travels"
+  );
+});
+
 app.get("/", (req, res) => {
   res.send("Welcome to the Trips & Travels API!");
 });
 
-// ✅ Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(
+    `mongodb+srv://ManojLakshmi:8904016770mk@cluster0.5xh3ozw.mongodb.net/trishik_travels`
+  );
 });
