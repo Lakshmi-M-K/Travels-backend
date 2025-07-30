@@ -14,19 +14,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3050;
 
-// ✅ Fix: Read the MongoDB connection string
-const mongoURL = process.env.MONGO_URL;
-
+// ✅ Connect to MongoDB
 mongoose
-  .connect(mongoURL)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// Middleware for CORS and JSON parsing
+// ✅ CORS Setup
 const allowedOrigins = [
-  "https://trips-travel.vercel.app",
-  "http://localhost:5173",
+  "https://trips-travel.vercel.app", // ✅ Your deployed frontend
+  "http://localhost:5173", // ✅ Your local frontend
 ];
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -36,33 +35,28 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+    credentials: true, // ✅ Important for cookies/tokens
   })
 );
+
+// ✅ Middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// Routes
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/tour", tourRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/booking", bookingRoutes);
 
-app.use("/api/reviews", reviewRoutes);
-
-app.listen(5000, () => {
-  console.log(
-    "mongodb+srv://ManojLakshmi:8904016770mk@cluster0.5xh3ozw.mongodb.net/trishik_travels"
-  );
-});
-
+// ✅ Default route
 app.get("/", (req, res) => {
   res.send("Welcome to the Trips & Travels API!");
 });
 
+// ✅ Single listen call
 app.listen(PORT, () => {
-  console.log(
-    `mongodb+srv://ManojLakshmi:8904016770mk@cluster0.5xh3ozw.mongodb.net/trishik_travels`
-  );
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
